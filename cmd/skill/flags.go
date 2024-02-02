@@ -6,7 +6,10 @@ import (
 )
 
 // неэкспортированная переменная flagRunAddr содержит адрес и порт для запуска сервера
-var flagRunAddr string
+var (
+	flagRunAddr  string
+	flagLogLevel string
+)
 
 // parseFlags обрабатывает аргументы командной строки
 // и сохраняет их значения в соответствующих переменных
@@ -21,6 +24,10 @@ func parseFlags() {
 	// даже если он был передан через аргумент командной строки
 	if envRunAddr := os.Getenv("RUN_ADDR"); envRunAddr != "" {
 		flagRunAddr = envRunAddr
+	}
+
+	if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" {
+		flagLogLevel = envLogLevel
 	}
 
 }
