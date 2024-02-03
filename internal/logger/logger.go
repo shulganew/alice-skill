@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -15,7 +16,9 @@ var Log *zap.Logger = zap.NewNop()
 func Initialize(level string) error {
 	// преобразуем текстовый уровень логирования в zap.AtomicLevel
 	lvl, err := zap.ParseAtomicLevel(level)
+	fmt.Println(level)
 	if err != nil {
+
 		return err
 	}
 	// создаём новую конфигурацию логера

@@ -29,5 +29,4 @@ func parseFlags() {
 	if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" {
 		flagLogLevel = envLogLevel
 	}
-
 }
