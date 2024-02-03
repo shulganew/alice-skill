@@ -3,8 +3,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/shulganew/alice-skill.git/internal/logger"
 	"github.com/shulganew/alice-skill.git/internal/models"
@@ -94,12 +96,32 @@ func webhook(w http.ResponseWriter, r *http.Request) {
 		logger.Log.Debug("unsupported request type", zap.String("type", req.Request.Type))
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
+
+	}
+	text := "Для вас нет новых сообщений."
+
+	// первый запрос новой сессии
+	if req.Session.New {
+		// обрабатываем поле Timezone запроса
+		tz, err := time.LoadLocation(req.Timezone)
+		if err != nil {
+			logger.Log.Debug("cannot parse timezone")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		// получаем текущее время в часовом поясе пользователя
+		now := time.Now().In(tz)
+		hour, minute, _ := now.Clock()
+
+		// формируем текст ответа
+		text = fmt.Sprintf("Точное время %d часов, %d минут. %s", hour, minute, text)
 	}
 
 	// заполняем модель ответа
 	resp := models.Response{
 		Response: models.ResponsePayload{
-			Text: "Sorry, I'm stupid now",
+			Text: text, // Алиса проговорит новый текст
 		},
 		Version: "1.0",
 	}
